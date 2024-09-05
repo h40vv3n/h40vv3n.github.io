@@ -8,7 +8,55 @@
     <author>
       <name>h40vv3n</name>
     </author>
-    <updated>2024-07-01T05:51:50.000Z</updated>
+    <updated>2024-09-05T07:00:06.000Z</updated>
+    <entry>
+        <id>http://example.com/2024/09/05/typecho-xss/</id>
+        <title>typecho_xss</title>
+        <link rel="alternate" href="http://example.com/2024/09/05/typecho-xss/"/>
+        <content type="html">&lt;h3 id=&#34;typecho-blogging-platform&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#typecho-blogging-platform&#34;&gt;#&lt;/a&gt; Typecho Blogging Platform&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Typecho is a PHP-based blog software and is designed to be the most powerful blog engine in the world. Typecho is released under the GNU General Public License 2.0.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link address：&lt;a href=&#34;https://github.com/typecho/typecho/&#34;&gt;https://github.com/typecho/typecho/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This open source project has an XSS vulnerability, which can be exploited by attackers to obtain sensitive information such as cookies of a large number of users (including administrators), which is very harmful.&lt;/p&gt;
+&lt;p&gt;Affected versions：v1.2.1&lt;/p&gt;
+&lt;h3 id=&#34;environment-construction&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#environment-construction&#34;&gt;#&lt;/a&gt; Environment Construction&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;php 7.4.3&lt;/li&gt;
+&lt;li&gt;MySQL 8.0.12&lt;/li&gt;
+&lt;li&gt;Nginx 1.15.11&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Download the source code file. After opening the environment, visit &lt;a href=&#34;http://localhost:8191/&#34;&gt;http://localhost:8191/&lt;/a&gt; (the main directory of the project) and you will be redirected to the installation interface.&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905151622013.png&#34; class title=&#34;image-20240905151622013&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Click the button below to start the installation. In the initial configuration interface, make the following configurations. The advanced options are set to default.&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905151824112.png&#34; class title=&#34;image-20240905151824112&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Before clicking to start the installation, you need to create the database typecho1.2.1&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905152010657.png&#34; class title=&#34;image-20240905152010657&#34;&gt;&lt;/p&gt;
+&lt;p&gt;After creation, click Start Installation above, and set the administrator&#39;s account password and email address when creating an administrator account.&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905152149510.png&#34; class title=&#34;image-20240905152149510&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Click Continue to install. The installation is successful.&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905152212895.png&#34; class title=&#34;image-20240905152212895&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;verification-process&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#verification-process&#34;&gt;#&lt;/a&gt; Verification Process&lt;/h3&gt;
+&lt;p&gt;At this time, write an article directly and publish it&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905152352963.png&#34; class title=&#34;image-20240905152352963&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Then use another browser (simulating other users) to access the link &lt;a href=&#34;http://localhost:8191/&#34;&gt;http://localhost:8191/&lt;/a&gt;, and enter the article homepage of the admin user.&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905152630508.png&#34; class title=&#34;image-20240905152630508&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Click on the article just created by the admin user and make the following comment in it&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905152848286.png&#34; class title=&#34;image-20240905152848286&#34;&gt;&lt;/p&gt;
+&lt;p&gt;As you can see, an XSS attack is attempted at the website entry point. The POC is:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://test.com/&amp;quot;onmouseover=&amp;quot;alert(document.cookie)&amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Comment submitted successfully&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905153103187.png&#34; class title=&#34;image-20240905153103187&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Now go back to the admin user&#39;s perspective and click Manage-&amp;gt;Comments to display all the comments, including the comments submitted by the simulated user just now.&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905153302841.png&#34; class title=&#34;image-20240905153302841&#34;&gt;&lt;/p&gt;
+&lt;p&gt;At this time, move the mouse over the name &amp;quot;user1&amp;quot; and you can see that the script is successfully executed and the cookie information is printed out.&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; data-src=&#34;/2024/09/05/typecho-xss/image-20240905153452569.png&#34; class title=&#34;image-20240905153452569&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;summarize&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#summarize&#34;&gt;#&lt;/a&gt; Summarize&lt;/h3&gt;
+&lt;p&gt;At this point, it can be proved that there is an XSS vulnerability, which can be exploited by attackers to steal user information, spread worm viruses, etc., which is very harmful.&lt;/p&gt;
+</content>
+        <updated>2024-09-05T07:00:06.000Z</updated>
+    </entry>
     <entry>
         <id>http://example.com/2024/07/01/URLDNS-Deserialize/</id>
         <title>URLDNS-Deserialize</title>
